@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from '../services/authService';
 import { User } from '../types/user';
-
+import UserService from '../services/userService'; // nuevo y descomentado las funciones que lo usan
+import FileService from '../services/fileService';
 
 const ping = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
@@ -89,7 +90,6 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-/*
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserService.getById(req.user!.id);
@@ -140,10 +140,6 @@ export const deletePicture = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-*/
-
-
-
 export default {
   ping,
   login,
@@ -152,4 +148,9 @@ export default {
   setPassword,
   createUser,
   updateUser,
+  getProfile,
+  updateProfile,
+  getPicture,
+  uploadPicture,
+  deletePicture
 };
