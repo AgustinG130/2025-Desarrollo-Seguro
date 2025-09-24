@@ -72,8 +72,15 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => { // Pronto
   const userId = req.params.id;
+  const authUserId = req.user?.id; // Viene del middleware authenticateJWT
+
+  // Valido que sea el mismo usuario
+  if (!authUserId || String(authUserId) !== String(userId)) {
+    return res.status(403).json({ message: 'Acceso Denegado' });
+  }
+  
   const { username, password, email, first_name, last_name } = req.body;
   try {
   const user: User = {
@@ -81,7 +88,8 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
       password,
       email,
       first_name,
-      last_name
+      last_name,
+      id: userId // Fataltaba este campo
     };
     const userDB = await AuthService.updateUser(user);
       res.status(201).json(userDB);
@@ -111,6 +119,7 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
 
 export const getPicture = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("req.user:", req.user);
     const { stream, contentType } = await FileService.getProfilePicture(req.user!.id);
     res.setHeader('Content-Type', contentType);
     stream.pipe(res);
