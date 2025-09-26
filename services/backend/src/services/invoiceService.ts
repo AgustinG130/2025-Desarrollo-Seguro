@@ -65,7 +65,7 @@ class InvoiceService {
   }
 
 
-  static async getReceipt(
+ static async getReceipt(
     invoiceId: string,
     pdfName: string
   ) {
@@ -75,9 +75,14 @@ class InvoiceService {
       throw new Error('Invoice not found');
     }
     try {
+      if (!/^[a-zA-Z0-9_-]+\.pdf$/.test(pdfName)) { // Valido que no intente otra cosa mas que leer el pdf
+      throw new Error('Invalid file name');
+      }
       const filePath = `/invoices/${pdfName}`;
+
       const content = await fs.readFile(filePath, 'utf-8');
       return content;
+
     } catch (error) {
       // send the error to the standard output
       console.error('Error reading receipt file:', error);
