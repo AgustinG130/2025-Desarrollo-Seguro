@@ -18,16 +18,8 @@ services:
     container_name: backend
     ports:
       - "5000:3000"
-    environment:
-      - DB_HOST=postgres
-      - DB_USER=user
-      - DB_PASS=password
-      - DB_NAME=jwt_api
-      - DB_PORT=5432
-      - SMTP_HOST=mailhog
-      - SMTP_PORT=1025
-      - SMTP_USER=seed
-      - SMTP_PASS=seed
+    env_file:
+      - .env   
     restart: unless-stopped
     depends_on:
       postgres:

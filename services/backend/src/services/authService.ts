@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import db from '../db';
 import { User,UserRow } from '../types/user';
-import jwtUtils from '../utils/jwt';
+import { generateToken  } from '../utils/jwt';
 import ejs from 'ejs';
 
 const RESET_TTL = 1000 * 60 * 60;         // 1h
@@ -161,7 +161,7 @@ class AuthService {
   }
 
   static generateJwt(userId: string): string {
-    return jwtUtils.generateToken(userId);
+    return generateToken(userId);
   }
 }
 

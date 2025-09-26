@@ -39,7 +39,7 @@ class InvoiceService {
     ccv: string,
     expirationDate: string
   ) {
-    
+  
     if (paymentBrand !== 'visa' && paymentBrand !== 'master') {
       throw new Error('Payment brand not supported');
     }
