@@ -39,6 +39,10 @@ class InvoiceService {
     ccv: string,
     expirationDate: string
   ) {
+    
+    if (paymentBrand !== 'visa' && paymentBrand !== 'master') {
+      throw new Error('Payment brand not supported');
+    }
     // use axios to call http://paymentBrand/payments as a POST request
     // with the body containing ccNumber, ccv, expirationDate
     // and handle the response accordingly
