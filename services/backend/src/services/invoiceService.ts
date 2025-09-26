@@ -36,7 +36,6 @@ class InvoiceService {
     ccv: string,
     expirationDate: string
   ) {
-    /*  ----------------- simulamos pago exitoso -----------------
     // use axios to call http://paymentBrand/payments as a POST request
     // with the body containing ccNumber, ccv, expirationDate
     // and handle the response accordingly
@@ -48,20 +47,12 @@ class InvoiceService {
     if (paymentResponse.status !== 200) {
       throw new Error('Payment failed');
     }
-    */
 
     // Update the invoice status in the database
-    const rowsUpdated = await db('invoices')
+    await db('invoices')
       .where({ id: invoiceId, userId })
       .update({ status: 'paid' });  
-    
-    if (rowsUpdated === 0) {
-    throw new Error('Invoice not found or not authorized');
-    }
-    
-    return { status: 200, message: 'Payment successful (simulado)' }; // Simulamos el pago exitoso
-  }
-
+    };
   static async  getInvoice( invoiceId:string): Promise<Invoice> {
     const invoice = await db<InvoiceRow>('invoices').where({ id: invoiceId }).first();
     if (!invoice) {
@@ -81,14 +72,9 @@ class InvoiceService {
       throw new Error('Invoice not found');
     }
     try {
-      if (!/^[a-zA-Z0-9_-]+\.pdf$/.test(pdfName)) { // Valido que no intente otra cosa mas que leer el pdf
-      throw new Error('Invalid file name');
-      }
       const filePath = `/invoices/${pdfName}`;
-
       const content = await fs.readFile(filePath, 'utf-8');
       return content;
-
     } catch (error) {
       // send the error to the standard output
       console.error('Error reading receipt file:', error);
