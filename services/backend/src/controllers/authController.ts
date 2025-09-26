@@ -117,6 +117,7 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+/*
 export const getPicture = async (req: Request, res: Response, next: NextFunction) => {
   try {
     console.log("req.user:", req.user);
@@ -149,6 +150,8 @@ export const deletePicture = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+*/
+
 export default {
   ping,
   login,
@@ -158,8 +161,5 @@ export default {
   createUser,
   updateUser,
   getProfile,
-  updateProfile,
-  getPicture,
-  uploadPicture,
-  deletePicture
+  updateProfile
 };
