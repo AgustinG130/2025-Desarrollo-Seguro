@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from '../services/authService';
 import { User } from '../types/user';
-
+import UserService from '../services/userService'; // nuevo y descomentado las funciones que lo usan
+import FileService from '../services/fileService';
 
 const ping = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
@@ -71,8 +72,15 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => { // Pronto
   const userId = req.params.id;
+  const authUserId = req.user?.id; // Viene del middleware authenticateJWT
+
+  // Valido que sea el mismo usuario
+  if (!authUserId || String(authUserId) !== String(userId)) {
+    return res.status(403).json({ message: 'Acceso Denegado' });
+  }
+  
   const { username, password, email, first_name, last_name } = req.body;
   try {
   const user: User = {
@@ -80,7 +88,8 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
       password,
       email,
       first_name,
-      last_name
+      last_name,
+      id: userId // Fataltaba este campo
     };
     const userDB = await AuthService.updateUser(user);
       res.status(201).json(userDB);
@@ -89,7 +98,6 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-/*
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserService.getById(req.user!.id);
@@ -109,8 +117,10 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+/*
 export const getPicture = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("req.user:", req.user);
     const { stream, contentType } = await FileService.getProfilePicture(req.user!.id);
     res.setHeader('Content-Type', contentType);
     stream.pipe(res);
@@ -142,8 +152,6 @@ export const deletePicture = async (req: Request, res: Response, next: NextFunct
 
 */
 
-
-
 export default {
   ping,
   login,
@@ -152,4 +160,6 @@ export default {
   setPassword,
   createUser,
   updateUser,
+  getProfile,
+  updateProfile
 };
